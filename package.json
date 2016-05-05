@@ -9,6 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "eventemitter3": "^1.2.0",
     "lodash": "^4.11.1",
     "three": "^0.76.1"
   },

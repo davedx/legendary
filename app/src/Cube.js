@@ -7,7 +7,7 @@ class Cube extends Node {
   constructor(props = {}) {
     super(props);
 
-    this.texture = new THREE.TextureLoader().load('assets/crate.gif');
+    this.texture = new THREE.TextureLoader().load(`assets/${props.texture}`);
     this.geometry = new THREE.BoxBufferGeometry($.Blocks.Side, $.Blocks.Side, $.Blocks.Side);
     this.material = new THREE.MeshBasicMaterial({ map: this.texture });
     this.mesh = new THREE.Mesh(this.geometry, this.material);

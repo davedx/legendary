@@ -10,9 +10,16 @@ class Plane extends Node {
 
     for (var i = 0, l = this.geometry.faces.length; i < l; i ++) {
       var face = this.geometry.faces[ i ];
-      face.vertexColors[ 0 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-      face.vertexColors[ 1 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-      face.vertexColors[ 2 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+      if (props.randomColors) {
+        face.vertexColors[ 0 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+        face.vertexColors[ 1 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+        face.vertexColors[ 2 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+      }
+      if (props.color) {
+        face.vertexColors[0] = new THREE.Color().setRGB(props.color[0], props.color[1], props.color[2]);
+        face.vertexColors[1] = new THREE.Color().setRGB(props.color[0], props.color[1], props.color[2]);
+        face.vertexColors[2] = new THREE.Color().setRGB(props.color[0], props.color[1], props.color[2]);
+      }
     }
 
     this.material = new THREE.MeshBasicMaterial({ vertexColors: THREE.VertexColors });

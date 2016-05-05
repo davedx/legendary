@@ -1,15 +1,27 @@
 import THREE from 'three'
+import events from './events';
 import PointerLockControls from './lib/PointerLockControls';
 import Component from './Component';
+import $ from './constants';
 
+//refactor this shit
 class Input extends Component {
   constructor(parent, props = {}) {
     super(parent);
 
     this.controls = new PointerLockControls(parent.camera);
     this.props = props;
+    this.travelMode = $.TravelModes.God;
+    this.fly = 0;
+
+    this.keyMap = {};
 
     let onKeyDown = (event) => {
+      if (!this.keyMap[event.keyCode]) {
+        this.keyMap[event.keyCode] = true;
+        events.emit('onkeydown', {key: event.keyCode, scene: this.props.scene});//events.MenuBuild, scene);
+      }
+
       switch ( event.keyCode ) {
         case 38: // up
         case 87: // w
@@ -31,11 +43,26 @@ class Input extends Component {
           break;
 
         case 32: // space
-          if (this.canJump === true) this.velocity.y += 350;
-          this.canJump = false;
+          if (this.travelMode === $.TravelModes.Normal) {
+            if (this.canJump === true) this.velocity.y += 350;
+            this.canJump = false;
+          } else {
+            if (this.shiftDown) {
+              this.fly = -1;
+            } else {
+              this.fly = 1;
+            }
+          }
           break;
         case 13: // enter
           this.action = true;
+          break;
+        case 16:
+          this.shiftDown = true;
+          break;
+
+        case 66: // b
+          //this.menuBuildDown = true;
           break;
 
         //default: console.info("unhandled key: "+event.keyCode);
@@ -43,6 +70,11 @@ class Input extends Component {
     };
 
     let onKeyUp = (event) => {
+      if (this.keyMap[event.keyCode]) {
+        this.keyMap[event.keyCode] = false;
+        events.emit('onkeyup', {key: event.keyCode, scene: this.props.scene});//events.MenuBuild, scene);
+      }
+
       switch( event.keyCode ) {
         case 38: // up
         case 87: // w
@@ -64,8 +96,20 @@ class Input extends Component {
           this.moveRight = false;
           break;
 
+        case 32: // space
+          this.fly = 0;
+          break;
+
         case 13: // enter
           this.action = false;
+          break;
+        case 16:
+          this.shiftDown = false;
+          break;
+
+        case 66:
+          this.menuBuildDown = false;
+          this.menuBuildWasDown = false;
           break;
       }
     };
@@ -101,7 +145,11 @@ class Input extends Component {
     this.velocity.x -= this.velocity.x * 10.0 * delta;
     this.velocity.z -= this.velocity.z * 10.0 * delta;
 
-    this.velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+    if (this.travelMode === $.TravelModes.Normal) {
+      this.velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+    } else {
+      this.velocity.y = this.fly * 100.0;
+    }
 
     if (this.moveForward) {
       this.velocity.z -= velocity * delta;
@@ -124,7 +172,12 @@ class Input extends Component {
     }
 
     if (this.action) {
-      this.parent.action.do(scene);
+      events.emit(events.DoAction, scene);
+    }
+
+    if (this.menuBuildDown && !this.menuBuildWasDown) {
+      //events.emit(events.MenuBuild, scene);
+      this.menuBuildWasDown = true;
     }
 
     this.controls.getObject().translateX(this.velocity.x * delta);
