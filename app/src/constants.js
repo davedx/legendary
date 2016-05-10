@@ -1,9 +1,15 @@
 export default {
   Blocks: {
-    Side: 100
+    Size: 100
+  },
+  Planes: {
+  	Size: 100
   },
   TravelModes: {
     Normal: 'normal',
     God: 'god'
+  },
+  Menus: {
+    Step: 120
   }
 }

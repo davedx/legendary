@@ -1,11 +1,13 @@
 import THREE from 'three';
 import Node from './node';
+import $ from './constants';
 
 class Plane extends Node {
   constructor(props = {}) {
     super(props);
 
-    this.geometry = new THREE.PlaneGeometry(2000, 2000, 100, 100);
+    let size = props.size ? props.size : $.Planes.Size;
+    this.geometry = new THREE.PlaneGeometry(size.h, size.w, 100, 100);
     if (props.rotation) {
       this.geometry.rotateX(props.rotation.x);
       this.geometry.rotateY(props.rotation.y);

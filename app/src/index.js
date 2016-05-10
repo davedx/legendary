@@ -24,7 +24,7 @@ function initWorld() {
   player = new Player();
   player.addToScene(scene);
 
-  let floor = new Plane({name: 'floor', rotation: {x: -Math.PI / 2, y: 0, z: 0}, randomColors: true});
+  let floor = new Plane({name: 'floor', size: {w: 2000, h: 2000}, rotation: {x: -Math.PI / 2, y: 0, z: 0}, randomColors: true});
   scene.add(floor.mesh);
 
   let cube = new Cube({name: 'cube', position: new THREE.Vector3(0, 50, -300), texture: 'crate.gif'});
