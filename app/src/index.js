@@ -3,14 +3,11 @@ import events from './events';
 import Cube from './Cube'
 import Plane from './Plane'
 import Player from './Player';
-import BuildMenu from './ui/Menu';
 
 let renderer;
-let ui = {};
 let player;
 
 let scene = initWorld();
-initUi(scene);
 animate();
 
 function initWorld() {
@@ -19,6 +16,7 @@ function initWorld() {
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.autoClearColor = false;
   document.body.appendChild(renderer.domElement);
 
   let scene = new THREE.Scene();
@@ -26,7 +24,7 @@ function initWorld() {
   player = new Player();
   player.addToScene(scene);
 
-  let floor = new Plane({name: 'floor', randomColors: true});
+  let floor = new Plane({name: 'floor', rotation: {x: -Math.PI / 2, y: 0, z: 0}, randomColors: true});
   scene.add(floor.mesh);
 
   let cube = new Cube({name: 'cube', position: new THREE.Vector3(0, 50, -300), texture: 'crate.gif'});
@@ -34,10 +32,6 @@ function initWorld() {
 
   window.addEventListener('resize', onWindowResize, false);
   return scene;
-}
-
-function initUi(scene) {
-  ui.buildMenu = new BuildMenu(scene);
 }
 
 function onWindowResize() {
@@ -51,5 +45,7 @@ function animate() {
   requestAnimationFrame(animate);
   player.update(scene);
 
+  renderer.clear();
   renderer.render(scene, player.camera);
+  renderer.render(player.uiScene, player.uiCamera);
 }
