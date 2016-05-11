@@ -2,9 +2,9 @@ import THREE from 'three';
 import Node from './node';
 import $ from './constants';
 
-class Plane extends Node {
+class Plane {
   constructor(props = {}) {
-    super(props);
+    this.props = props;
 
     let size = props.size ? props.size : $.Planes.Size;
     this.geometry = new THREE.PlaneGeometry(size.h, size.w, 100, 100);
@@ -14,8 +14,8 @@ class Plane extends Node {
       this.geometry.rotateZ(props.rotation.z);
     }
 
-    for (var i = 0, l = this.geometry.faces.length; i < l; i ++) {
-      var face = this.geometry.faces[i];
+    for (let i = 0, l = this.geometry.faces.length; i < l; i ++) {
+      let face = this.geometry.faces[i];
       if (props.randomColors) {
         face.vertexColors[0] = new THREE.Color().setHSL(Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75);
         face.vertexColors[1] = new THREE.Color().setHSL(Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75);
@@ -34,10 +34,8 @@ class Plane extends Node {
     this.mesh.name = this.props.name;
 
     if (props.position) {
-      console.info("setting pos: ", props.position);
       this.mesh.position.set(props.position.x, props.position.y, props.position.z);
     }
-
   }
 }
 

@@ -6,6 +6,7 @@ import Player from './Player';
 
 let renderer;
 let player;
+let prevTime = performance.now();
 
 let scene = initWorld();
 animate();
@@ -21,8 +22,8 @@ function initWorld() {
 
   let scene = new THREE.Scene();
 
-  player = new Player();
-  player.addToScene(scene);
+  player = Player.create({});
+  scene.add(player);
 
   let floor = new Plane({name: 'floor', size: {w: 2000, h: 2000}, rotation: {x: -Math.PI / 2, y: 0, z: 0}, randomColors: true});
   scene.add(floor.mesh);
@@ -43,7 +44,12 @@ function onWindowResize() {
 
 function animate() {
   requestAnimationFrame(animate);
-  player.update(scene);
+
+  const time = performance.now();
+  const delta = (time - prevTime) / 1000;
+  prevTime = time;
+
+  player.update(delta, scene);
 
   renderer.clear();
   renderer.render(scene, player.camera);

@@ -2,10 +2,10 @@ import THREE from 'three';
 import Node from './node';
 import $ from './constants';
 
-class Cube extends Node {
+class Cube {
   
   constructor(props = {}) {
-    super(props);
+    this.props = props;
 
     let size = props.size ? props.size : $.Blocks.Size;
     this.texture = new THREE.TextureLoader().load(`assets/${props.texture}`);

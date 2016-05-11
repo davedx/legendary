@@ -31,6 +31,12 @@ class Menu {
     parent.add(this.root);
 
     events.on('onkeydown', (options) => {
+      if (options.key === 66) {
+        this.toggleActive();
+      }
+    });
+
+    events.on('build:onkeydown', (options) => {
       switch (options.key) {
         case 38: // up
           this.moveCursor(0, -1); break;
@@ -41,8 +47,10 @@ class Menu {
         case 39: // right
           this.moveCursor(1, 0); break;
         case 66:
-          this.root.visible = !this.root.visible;
+          this.toggleActive();
           break;
+        case 13:
+        default: console.info(options.key); break;
       }
     });
 
@@ -50,6 +58,12 @@ class Menu {
     this.cursor = new Plane({color: [0.8, 0.98, 1], size: {w: 120, h: 120}, position: {x: -100, y: -0, z: -100}, rotation: {x: 0, y: 0, z: -Math.PI / 2}});
     this.root.add(menuPlane.mesh);
     this.root.add(this.cursor.mesh);
+  }
+
+  toggleActive() {
+    this.root.visible = !this.root.visible;
+    const handler = this.root.visible ? 'build' : '';
+    events.emit('setactiveinputhandler', {handler: handler});
   }
 
   moveCursor(x, y) {

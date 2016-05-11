@@ -3,29 +3,41 @@ import _ from 'lodash';
 import Component from './Component';
 import events from './events';
 
-class Action extends Component {
+class BuildAction extends Component {
   constructor(parent) {
     super(parent);
     this.actionRaycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, 0, -1), 0, 5000);
     this.timer = 0;
-    setInterval(() => this.updateTimer(), 100);
+    this.tryAction = false;
 
     //TODO: unsubscribes?
     events.on(events.SelectBuildMaterial, this.selectBuildMaterial, this);
-    events.on(events.DoAction, this.doAction, this);
+    events.on('onkeydown', (options) => {
+      console.info(options);
+      if (options.key === 13) {
+        this.tryAction = true;
+      }
+    });
+    events.on('onkeyup', (options) => {
+      if (options.key === 13) {
+        this.tryAction = false;
+      }
+    });
   }
 
   updateTimer() {
+  }
+
+  update(dt, scene) {
     if (this.timer > 0) {
-      this.timer = Math.max(0, this.timer - 100);
+      this.timer = Math.max(0, this.timer - dt);
+    } else if (this.tryAction) {
+      this.doAction(scene);
     }
   }
 
   // bug: can clone ground
   doAction(scene) {
-    if (this.timer > 0) {
-      return;
-    }
     this.actionRaycaster.ray.origin.copy(this.parent.controls.getObject().position);
     this.actionRaycaster.ray.direction.copy(this.parent.camera.getWorldDirection());
 
@@ -49,4 +61,4 @@ class Action extends Component {
   }
 }
 
-export default Action;
+export default BuildAction;
