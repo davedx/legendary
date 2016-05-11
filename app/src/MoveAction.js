@@ -7,13 +7,12 @@ import $ from './constants';
 
 class MoveAction extends Component {
   constructor(parent, props = {}) {
-    super(parent);
+    super(parent, props);
 
-    this.props = props;
     this.controls = new PointerLockControls(parent.camera);
-    this.travelMode = $.TravelModes.Normal;
+    this.travelMode = $.TravelModes.God;
     this.fly = 0;
-    this.moveMap = {x: 0, z: 0, jump: 0};
+    this.moveMap = {x: 0, shift: 0, flyY: 0, z: 0};
 
     this.velocity = new THREE.Vector3();
     this.raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
@@ -31,9 +30,9 @@ class MoveAction extends Component {
           this.moveMap.x = 1; break;
         case 32:
           this.doJump();
-          //this.canJump = false;
-          //this.moveMap.jump = true;
           break;
+        case 16:
+          this.moveMap.shift = true; break;
       }
     });
     events.on('onkeyup', (options) => {
@@ -47,21 +46,26 @@ class MoveAction extends Component {
         case 68:
           this.moveMap.x = 0; break;
         case 32:
-          this.moveMap.jump = false; break;
+          if (this.travelMode === $.TravelModes.God) {
+            this.moveMap.flyY = 0;
+          }
+          break;
+        case 16:
+          this.moveMap.shift = false; break;
       }
     });
   }
 
   doJump() {
-    if (this.canJump === true) {
+    if (this.travelMode === $.TravelModes.God) {
+      this.moveMap.flyY = this.moveMap.shift ? -1 : 1;
+    } else if (this.canJump === true) {
       this.canJump = false;
       this.velocity.y += 15;
     }
   }
 
   update(dt, scene) {
-    const velocity = this.props.velocity || 400.0;
-
     this.raycaster.ray.origin.copy(this.controls.getObject().position);
     this.raycaster.ray.origin.y -= 10;
 
@@ -69,13 +73,13 @@ class MoveAction extends Component {
     const isOnObject = intersections.length > 0;
 
     if (this.travelMode === $.TravelModes.Normal) {
-      this.velocity.y -= 9.8 * 5.0 * dt; // 100.0 = mass
+      this.velocity.y -= 9.8 * this.props.mass * dt;
     } else {
-      this.velocity.y = this.fly * 100.0;
+      this.velocity.y = this.moveMap.flyY * this.props.flyVelocity * dt;
     }
 
-    this.velocity.z = this.moveMap.z * velocity * dt;
-    this.velocity.x = this.moveMap.x * velocity * dt;
+    this.velocity.z = this.moveMap.z * this.props.velocity * dt;
+    this.velocity.x = this.moveMap.x * this.props.velocity * dt;
 
     if (isOnObject) {
       this.velocity.y = Math.max(0, this.velocity.y);
@@ -83,7 +87,7 @@ class MoveAction extends Component {
       this.canJump = true;
     }
     if (this.velocity.x !== 0) {
-      console.info("v: ", this.velocity, "dt: ", dt);
+      //console.info("v: ", this.velocity, "dt: ", dt);
     }
     this.controls.getObject().translateX(this.velocity.x);
     this.controls.getObject().translateY(this.velocity.y);

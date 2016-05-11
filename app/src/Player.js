@@ -5,6 +5,7 @@ import Input from './Input';
 import BuildAction from './BuildAction';
 import MoveAction from './MoveAction';
 import BuildMenu from './ui/Menu';
+import $ from './constants';
 
 class Player extends Node {
   static create(props) {
@@ -19,8 +20,12 @@ class Player extends Node {
     player.buildMenu = new BuildMenu(player.uiScene);
 
     player.components.input = new Input(player);
-    player.components.buildAction = new BuildAction(player);
-    player.components.moveAction = new MoveAction(player, {velocity: 200.0});
+    player.components.buildAction = new BuildAction(player, {actionInterval: $.Player.ActionInterval});
+    player.components.moveAction = new MoveAction(player, {
+      velocity: $.Player.MoveVelocity,
+      mass: $.Player.Mass,
+      flyVelocity: $.Player.FlyVelocity
+    });
 
     player.add(player.components.moveAction.controls.getObject());
     return player;

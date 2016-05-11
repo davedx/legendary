@@ -1,6 +1,7 @@
 class Component {
-	constructor(parent) {
+	constructor(parent, props = {}) {
 		this.parent = parent;
+		this.props = props;
 	}
 
 	update(dt, scene) {}
