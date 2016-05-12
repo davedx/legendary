@@ -4,7 +4,8 @@ import Node from './node';
 import Input from './Input';
 import BuildAction from './BuildAction';
 import MoveAction from './MoveAction';
-import BuildMenu from './ui/Menu';
+import BuildHotBar from './ui/BuildHotBar';
+import BuildMenu from './ui/BuildMenu';
 import $ from './constants';
 
 class Player extends Node {
@@ -17,6 +18,7 @@ class Player extends Node {
     player.uiScene = new THREE.Scene();
     player.uiCamera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 1000);
     player.uiScene.add(player.uiCamera);
+    player.buildHotBar = new BuildHotBar(player.uiScene);
     player.buildMenu = new BuildMenu(player.uiScene);
 
     player.components.input = new Input(player);

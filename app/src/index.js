@@ -40,6 +40,7 @@ function onWindowResize() {
   player.camera.updateProjectionMatrix();
 
   renderer.setSize(window.innerWidth, window.innerHeight);
+  events.emit('onwindowresize', {width: window.innerWidth, height: window.innerHeight});
 }
 
 function animate() {

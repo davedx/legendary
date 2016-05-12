@@ -1,42 +1,33 @@
-import _ from 'lodash';
 import THREE from 'three';
-import Cube from '../Cube';
-import Plane from '../Plane';
+import Plane2D from './Plane2D';
 import events from '../events';
+import Layouts from './Layouts';
 import $ from '../constants';
 
-const buildMaterials1 = {
-  Crate: {
-    name: 'Crate',
-    texture: 'crate.gif',
-    shape: 'Cube'
-  },
-  Grass: {
-    name: 'Grass',
-    texture: 'grass.jpg',
-    shape: 'Cube'
-  },
-  GrassThick: {
-    name: 'Thick Grass',
-    texture: 'grass.jpg',
-    shape: 'Cube'
-  }
-};
-
 class Menu {
-  constructor(parent) {
+  constructor(parent, props = {}) {
+    this.props = props;
     this.grid = [];
     this.root = new THREE.Object3D();
     this.root.visible = false;
+
+    if (this.props.handler) {
+      this.keydownHandler = `${this.props.handler}:onkeydown`;
+    } else {
+      this.keydownHandler = 'onkeydown';
+    }
+
     parent.add(this.root);
 
-    events.on('onkeydown', (options) => {
-      if (options.key === 66) {
-        this.toggleActive();
-      }
-    });
+    if (this.props.activationKey) {
+      events.on('onkeydown', (options) => {
+        if (options.key === this.props.activationKey) {
+          this.toggleActive();
+        }
+      });
+    }
 
-    events.on('build:onkeydown', (options) => {
+    events.on(this.keydownHandler, (options) => {
       switch (options.key) {
         case 38: // up
           this.moveCursor(0, -1); break;
@@ -46,16 +37,30 @@ class Menu {
           this.moveCursor(0, 1); break;
         case 39: // right
           this.moveCursor(1, 0); break;
-        case 66:
-          this.toggleActive();
-          break;
         case 13:
-        default: console.info(options.key); break;
+          break;
+        default:
+          if (options.key === this.props.activationKey) {
+            this.toggleActive();
+          }
+          break; // console.info(options.key); break;
       }
     });
-
-    let menuPlane = new Plane({color: [0.5, 0.8, 1], size: {w: 800, h: 500}, position: {x: 0, y: 0, z: -200}, rotation: {x: 0, y: 0, z: -Math.PI / 2}});
-    this.cursor = new Plane({color: [0.8, 0.98, 1], size: {w: 120, h: 120}, position: {x: -100, y: -0, z: -100}, rotation: {x: 0, y: 0, z: -Math.PI / 2}});
+    // calculate positions
+    let {size, position} = Layouts.flex(this.props.window, true);
+    position.z = -200;
+    //console.info('setting window to: ', position);
+    this.window = {
+      size: size,
+      position: position
+    };
+    //console.info("sz: ", size, "pos: ", position);
+    let menuPlane = new Plane2D({color: [0.5, 0.8, 1], size: size, position: position});
+    this.cursor = new Plane2D({
+      color: [0.8, 0.98, 1],
+      size: {w: 120, h: 120},
+      position: {x: this.window.position.x+10, y: this.window.position.y-10, z: -100}
+    });
     this.root.add(menuPlane.mesh);
     this.root.add(this.cursor.mesh);
   }
@@ -67,6 +72,8 @@ class Menu {
   }
 
   moveCursor(x, y) {
+    //TODO: restrict to menu grid
+    //TODO: for buildhotbar, select build material :D
     console.info("mv cursor: ", x, y);
     this.cursor.mesh.translateX($.Menus.Step*x);
     this.cursor.mesh.translateY(-$.Menus.Step*y);
@@ -75,32 +82,6 @@ class Menu {
   setTitle(title) {
     //
   }
-
-  addGroupToGrid(group) {
-    let x = -100, y = 0, step = 120;
-    _.each(group, (block, key) => {
-      let cube = new Cube({name: 'cube', size: 100, position: new THREE.Vector3(x, y, -100), texture: block.texture});
-      this.grid.push({
-        mesh: cube.mesh,
-        props: block
-      });
-      this.root.add(cube.mesh);
-      x += $.Menus.Step;
-      if (x > 400) {
-        x = 0;
-        y += $.Menus.Step;
-      }
-    });
-  }
 }
 
-class BuildMenu extends Menu {
-  constructor(scene) {
-    super(scene);
-
-    this.setTitle('Build menu');
-    this.addGroupToGrid(buildMaterials1);
-  }
-}
-
-export default BuildMenu;
+export default Menu;
