@@ -7,7 +7,7 @@ import $ from '../constants';
 class Menu {
   constructor(parent, props = {}) {
     this.props = props;
-    this.grid = [];
+    this.grid = [[]];
     this.root = new THREE.Object3D();
     this.root.visible = false;
 
@@ -59,7 +59,8 @@ class Menu {
     this.cursor = new Plane2D({
       color: [0.8, 0.98, 1],
       size: {w: 120, h: 120},
-      position: {x: this.window.position.x+10, y: this.window.position.y-10, z: -100}
+      position: {x: this.window.position.x+10, y: this.window.position.y-10, z: -100},
+      gridPosition: [0, 0]
     });
     this.root.add(menuPlane.mesh);
     this.root.add(this.cursor.mesh);
@@ -74,9 +75,12 @@ class Menu {
   moveCursor(x, y) {
     //TODO: restrict to menu grid
     //TODO: for buildhotbar, select build material :D
-    console.info("mv cursor: ", x, y);
-    this.cursor.mesh.translateX($.Menus.Step*x);
-    this.cursor.mesh.translateY(-$.Menus.Step*y);
+    //console.info("mv cursor: ", x, y);
+    let cursorPos = this.cursor.props.gridPosition;
+    let newPosX = Math.min(Math.max(0, cursorPos[0] + x), this.grid[cursorPos[1]].length-1);
+    this.cursor.props.gridPosition[0] = newPosX;
+    //console.info("->: ", this.cursor.props.gridPosition);
+    this.cursor.setPosition(this.window.position.x+10 + newPosX*$.Menus.Step, this.window.position.y-10, -100);
   }
 
   setTitle(title) {

@@ -40,7 +40,8 @@ class BuildHotBar extends Menu {
   }
 
   addGroupToGrid(group) {
-    let x = this.window.position.x+20, y = this.window.position.y-20, step = 120;
+    let x = this.window.position.x+20, y = this.window.position.y-20, step = 120,
+      i = 0, j = 0;
     _.each(group, (block, key) => {
       let cube = new Plane2D({
         name: 'block',
@@ -48,15 +49,19 @@ class BuildHotBar extends Menu {
         position: {x: x, y: y, z: -100},
         texture: block.texture
       });
-      this.grid.push({
+      this.grid[j][i] = {
         mesh: cube.mesh,
-        props: block
-      });
+        props: block,
+        gridPosition: [i, j]
+      };
       this.root.add(cube.mesh);
       x += $.Menus.Step;
+      i++;
       if (x > 400) {
         x = 0;
+        i = 0;
         y += $.Menus.Step;
+        j++;
       }
     });
   }
