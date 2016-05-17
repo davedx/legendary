@@ -1,12 +1,14 @@
 import THREE from 'three';
 import Plane2D from './Plane2D';
 import events from '../events';
+import Component from '../Component';
 import Layouts from './Layouts';
 import $ from '../constants';
 
-class Menu {
+class Menu extends Component {
   constructor(parent, props = {}) {
-    this.props = props;
+    super(parent, props);
+    // this.props = props;
     this.grid = [[]];
     this.root = new THREE.Object3D();
     this.root.visible = false;
@@ -20,32 +22,10 @@ class Menu {
     parent.add(this.root);
 
     if (this.props.activationKey) {
-      events.on('onkeydown', (options) => {
-        if (options.key === this.props.activationKey) {
-          this.toggleActive();
-        }
-      });
+      events.on('onkeydown', this.downHandler, this);
     }
 
-    events.on(this.keydownHandler, (options) => {
-      switch (options.key) {
-        case 38: // up
-          this.moveCursor(0, -1); break;
-        case 37: // left
-          this.moveCursor(-1, 0); break;
-        case 40: // down
-          this.moveCursor(0, 1); break;
-        case 39: // right
-          this.moveCursor(1, 0); break;
-        case 13:
-          break;
-        default:
-          if (options.key === this.props.activationKey) {
-            this.toggleActive();
-          }
-          break; // console.info(options.key); break;
-      }
-    });
+    events.on(this.keydownHandler, this.downHandler, this);
     // calculate positions
     let {size, position} = Layouts.flex(this.props.window, true);
     position.z = -200;
@@ -64,6 +44,36 @@ class Menu {
     });
     this.root.add(menuPlane.mesh);
     this.root.add(this.cursor.mesh);
+  }
+
+  destroy() {
+    events.off(this.keydownHandler, this.downHandler, this);
+    if (this.props.activationKey) {
+      events.off('onkeydown', this.downHandler, this);
+    }
+  }
+
+  downHandler(options) {
+    // if (options.key === this.props.activationKey) {
+    //   return this.toggleActive();
+    // }
+    switch (options.key) {
+      case 38: // up
+        this.moveCursor(0, -1); break;
+      case 37: // left
+        this.moveCursor(-1, 0); break;
+      case 40: // down
+        this.moveCursor(0, 1); break;
+      case 39: // right
+        this.moveCursor(1, 0); break;
+      case 13:
+        break;
+      case this.props.activationKey:
+        this.toggleActive();
+        break;
+      default:
+        break; // console.info(options.key); break;
+    }
   }
 
   toggleActive() {

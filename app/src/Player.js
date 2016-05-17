@@ -18,9 +18,9 @@ class Player extends Node {
     player.uiScene = new THREE.Scene();
     player.uiCamera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 1000);
     player.uiScene.add(player.uiCamera);
-    player.buildHotBar = new BuildHotBar(player.uiScene);
-    player.buildMenu = new BuildMenu(player.uiScene);
 
+    player.components.buildHotBar = new BuildHotBar(player.uiScene);
+    player.components.buildMenu = new BuildMenu(player.uiScene);
     player.components.input = new Input(player);
     player.components.buildAction = new BuildAction(player, {actionInterval: $.Player.ActionInterval});
     player.components.moveAction = new MoveAction(player, {

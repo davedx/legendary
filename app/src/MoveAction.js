@@ -17,43 +17,51 @@ class MoveAction extends Component {
     this.velocity = new THREE.Vector3();
     this.raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
 
-    events.on('onkeydown', (options) => {
-      //console.info(options);
-      switch (options.key) {
-        case 87:
-          this.moveMap.z = -1; break;
-        case 65:
-          this.moveMap.x = -1; break;
-        case 83:
-          this.moveMap.z = 1; break;
-        case 68:
-          this.moveMap.x = 1; break;
-        case 32:
-          this.doJump();
-          break;
-        case 16:
-          this.moveMap.shift = true; break;
-      }
-    });
-    events.on('onkeyup', (options) => {
-      switch (options.key) {
-        case 87:
-          this.moveMap.z = 0; break;
-        case 65:
-          this.moveMap.x = 0; break;
-        case 83:
-          this.moveMap.z = 0; break;
-        case 68:
-          this.moveMap.x = 0; break;
-        case 32:
-          if (this.travelMode === $.TravelModes.God) {
-            this.moveMap.flyY = 0;
-          }
-          break;
-        case 16:
-          this.moveMap.shift = false; break;
-      }
-    });
+    events.on('onkeydown', this.keyDown, this);
+    events.on('onkeyup', this.keyUp, this);
+  }
+
+  destroy() {
+    events.off('onkeydown', this.keyDown, this);
+    events.off('onkeyup', this.keyUp, this);
+  }
+
+  keyDown(options) {
+    switch (options.key) {
+      case 87:
+        this.moveMap.z = -1; break;
+      case 65:
+        this.moveMap.x = -1; break;
+      case 83:
+        this.moveMap.z = 1; break;
+      case 68:
+        this.moveMap.x = 1; break;
+      case 32:
+        this.doJump();
+        break;
+      case 16:
+        this.moveMap.shift = true; break;
+    }    
+  }
+
+  keyUp(options) {
+    switch (options.key) {
+      case 87:
+        this.moveMap.z = 0; break;
+      case 65:
+        this.moveMap.x = 0; break;
+      case 83:
+        this.moveMap.z = 0; break;
+      case 68:
+        this.moveMap.x = 0; break;
+      case 32:
+        if (this.travelMode === $.TravelModes.God) {
+          this.moveMap.flyY = 0;
+        }
+        break;
+      case 16:
+        this.moveMap.shift = false; break;
+    }
   }
 
   doJump() {

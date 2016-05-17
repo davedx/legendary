@@ -10,19 +10,27 @@ class BuildAction extends Component {
     this.timer = 0;
     this.tryAction = false;
 
-    //TODO: unsubscribes?
     events.on(events.SelectBuildMaterial, this.selectBuildMaterial, this);
-    events.on('onkeydown', (options) => {
-      console.info(options);
-      if (options.key === 13) {
-        this.tryAction = true;
-      }
-    });
-    events.on('onkeyup', (options) => {
-      if (options.key === 13) {
-        this.tryAction = false;
-      }
-    });
+    events.on('onkeydown', this.downHandler, this);
+    events.on('onkeyup', this.upHandler, this);
+  }
+
+  upHandler(options) {
+    if (options.key === 13) {
+      this.tryAction = false;
+    }
+  }
+
+  downHandler(options) {
+    if (options.key === 13) {
+      this.tryAction = true;
+    }
+  }
+
+  destroy() {
+    events.off('onkeydown', this.downHandler, this);
+    events.off('onkeyup', this.upHandler, this);
+    events.off(events.SelectBuildMaterial, this.selectBuildMaterial, this);
   }
 
   update(dt, scene) {

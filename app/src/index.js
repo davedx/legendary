@@ -3,12 +3,16 @@ import events from './events';
 import Cube from './Cube'
 import Plane from './Plane'
 import Player from './Player';
+import RootInputHandler from './RootInputHandler';
 
 let renderer;
 let player;
 let prevTime = performance.now();
 
 let scene = initWorld();
+let running = true;
+let rootInputHandler = new RootInputHandler({exit: exit});
+
 animate();
 
 function initWorld() {
@@ -44,7 +48,9 @@ function onWindowResize() {
 }
 
 function animate() {
-  requestAnimationFrame(animate);
+  if (running) {
+    requestAnimationFrame(animate);
+  }
 
   const time = performance.now();
   const delta = (time - prevTime) / 1000;
@@ -55,4 +61,11 @@ function animate() {
   renderer.clear();
   renderer.render(scene, player.camera);
   renderer.render(player.uiScene, player.uiCamera);
+}
+
+function exit() {
+  running = false;
+  scene.remove(player);
+  player.destroy();
+  rootInputHandler.destroy();
 }

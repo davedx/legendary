@@ -10,9 +10,7 @@ class Input extends Component {
     this.handler = '';
     this.keyMap = {};
 
-    events.on('setactiveinputhandler', (options) => {
-      this.handler = options.handler;
-    });
+    events.on('setactiveinputhandler', this.setActiveInputHandler, this);
 
     let onKeyDown = (event) => {
       if (!this.keyMap[event.keyCode]) {
@@ -32,6 +30,14 @@ class Input extends Component {
 
     document.addEventListener('keydown', onKeyDown, false);
     document.addEventListener('keyup', onKeyUp, false);
+  }
+
+  setActiveInputHandler(options) {
+    this.handler = options.handler;
+  }
+
+  destroy() {
+    events.off('setactiveinputhandler', this.setActiveInputHandler, this);
   }
 }
 
