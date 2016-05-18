@@ -18,11 +18,32 @@ class Cube {
     }
     this.material = new THREE.MeshBasicMaterial({ map: this.texture });
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.mesh.name = this.props.name;
+    this.mesh.userData.name = this.props.name;
 
+    if (props.unitPosition) {
+      Cube.setFromUnitPosition(this.mesh, props.unitPosition);
+    }
     if (props.position) {
       this.mesh.position.set(props.position.x, props.position.y, props.position.z);
     }
+  }
+
+  static setFromUnitPosition(mesh, unitPosition, size) {
+    mesh.userData.unitPosition = unitPosition;
+    let pos = {
+      x: unitPosition.x * $.Size.Cube,
+      y: unitPosition.y * $.Size.Cube + 0.5*$.Size.Cube,
+      z: unitPosition.z * $.Size.Cube
+    };
+    if (_.isObject(size)) {
+      pos.y -= $.Size.Cube*0.5 - size.y*0.5;
+    }
+    mesh.position.set(pos.x, pos.y, pos.z);
+  }
+
+  static calculateRoundedPosition(x, y, z) {
+    let len = $.Size.Cube;
+    //return {x: x % len * len}
   }
 }
 
