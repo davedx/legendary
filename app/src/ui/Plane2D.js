@@ -11,7 +11,6 @@ class Plane2D extends Plane {
 	}
 
 	setPosition(x, y, z) {
-		//TODO: as above
 		x += this.props.size.w/2;
 		y -= this.props.size.h/2;
     this.mesh.position.set(x, y, z);

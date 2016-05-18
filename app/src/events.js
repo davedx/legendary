@@ -4,10 +4,6 @@ import _ from 'lodash';
 let events;
 
 export default {
-  SelectBuildMaterial: 'SelectBuildMaterial',
-  DoAction: 'DoAction',
-  MenuBuild: 'MenuBuild',
-
   init: () => {
     events = new EventEmitter();
   },

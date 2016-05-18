@@ -91,6 +91,9 @@ class Menu extends Component {
     this.cursor.props.gridPosition[0] = newPosX;
     //console.info("->: ", this.cursor.props.gridPosition);
     this.cursor.setPosition(this.window.position.x+10 + newPosX*$.Menus.Step, this.window.position.y-10, -100);
+    if (this.onCursorMoved) {
+      this.onCursorMoved(newPosX);//this.grid[newPosX][0]);
+    }
   }
 
   setTitle(title) {

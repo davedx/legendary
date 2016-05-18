@@ -5,6 +5,7 @@ import Plane2D from './Plane2D';
 import events from '../events';
 import Menu from './Menu';
 import $ from '../constants';
+import state from '../state';
 
 const buildMaterials1 = {
   Crate: {
@@ -17,10 +18,10 @@ const buildMaterials1 = {
     texture: 'grass.jpg',
     shape: 'Cube'
   },
-  GrassThick: {
-    name: 'Thick Grass',
-    texture: 'grass.jpg',
-    shape: 'Cube'
+  TriggerArea: {
+    name: 'Trigger Area',
+    texture: 'triggerarea.jpg',
+    shape: 'FlatCube'
   }
 };
 
@@ -39,6 +40,11 @@ class BuildHotBar extends Menu {
     this.toggleActive();
   }
 
+  onCursorMoved(x, y) {
+    let gridEntry = this.grid[0][x];
+    state.currentBlock = gridEntry;
+  }
+
   addGroupToGrid(group) {
     let x = this.window.position.x+20, y = this.window.position.y-20, step = 120,
       i = 0, j = 0;
@@ -49,8 +55,15 @@ class BuildHotBar extends Menu {
         position: {x: x, y: y, z: -100},
         texture: block.texture
       });
+      console.info("sz: ", $.Size[block.shape]);
       this.grid[j][i] = {
         mesh: cube.mesh,
+        spawner: new Cube({
+          name: 'cube',
+          size: $.Size[block.shape],
+          position: new THREE.Vector3(0, 0, 0),
+          texture: block.texture
+        }),
         props: block,
         gridPosition: [i, j]
       };
@@ -64,6 +77,7 @@ class BuildHotBar extends Menu {
         j++;
       }
     });
+    state.currentBlock = _.first(this.grid[0]);
   }
 }
 

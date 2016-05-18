@@ -6,7 +6,7 @@ class Plane {
   constructor(props = {}) {
     this.props = props;
 
-    let size = props.size ? props.size : $.Planes.Size;
+    let size = props.size ? props.size : $.Size.Plane;
 
     this.geometry = new THREE.PlaneGeometry(size.h, size.w, 100, 100);
     if (props.rotation) {

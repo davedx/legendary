@@ -2,6 +2,7 @@ import THREE from 'three'
 import _ from 'lodash';
 import Component from './Component';
 import events from './events';
+import state from './state';
 
 class BuildAction extends Component {
   constructor(parent, props = {}) {
@@ -10,9 +11,13 @@ class BuildAction extends Component {
     this.timer = 0;
     this.tryAction = false;
 
-    events.on(events.SelectBuildMaterial, this.selectBuildMaterial, this);
     events.on('onkeydown', this.downHandler, this);
     events.on('onkeyup', this.upHandler, this);
+  }
+
+  destroy() {
+    events.off('onkeydown', this.downHandler, this);
+    events.off('onkeyup', this.upHandler, this);
   }
 
   upHandler(options) {
@@ -27,12 +32,6 @@ class BuildAction extends Component {
     }
   }
 
-  destroy() {
-    events.off('onkeydown', this.downHandler, this);
-    events.off('onkeyup', this.upHandler, this);
-    events.off(events.SelectBuildMaterial, this.selectBuildMaterial, this);
-  }
-
   update(dt, scene) {
     if (this.timer > 0) {
       this.timer = Math.max(0, this.timer - dt);
@@ -41,7 +40,7 @@ class BuildAction extends Component {
     }
   }
 
-  // bug: can clone ground
+  // bug: can't build on ground?
   doAction(scene) {
     const moveAction = this.parent.components.moveAction;
     this.actionRaycaster.ray.origin.copy(moveAction.controls.getObject().position);
@@ -59,7 +58,7 @@ class BuildAction extends Component {
       //console.info("dir: ", direction);
       center = center.add(direction);
       //console.info("old pos: ",center," new pos: ",center);
-      let newObject = first.object.clone();
+      let newObject = state.currentBlock.spawner.mesh.clone();
       newObject.position.set(center.x, center.y, center.z);
       scene.add(newObject);
     }

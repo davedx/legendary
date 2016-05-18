@@ -1,9 +1,12 @@
 export default {
-  Blocks: {
-    Size: 100
-  },
-  Planes: {
-  	Size: 100
+  Size: {
+    Cube: 100,
+    FlatCube: {
+      x: 100,
+      y: 10,
+      z: 100
+    },
+    Plane: 100
   },
   TravelModes: {
     Normal: 'normal',
