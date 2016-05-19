@@ -13,6 +13,8 @@ class Input extends Component {
     events.on('setactiveinputhandler', this.setActiveInputHandler, this);
 
     let onKeyDown = (event) => {
+      //T=84, Q=81
+//      console.info(event.keyCode);
       if (!this.keyMap[event.keyCode]) {
         this.keyMap[event.keyCode] = true;
         const evName = this.handler != '' ? `${this.handler}:onkeydown` : 'onkeydown';

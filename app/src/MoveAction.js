@@ -1,15 +1,12 @@
 import THREE from 'three'
-import _ from 'lodash';
 import Component from './Component';
 import events from './events';
-import PointerLockControls from './lib/PointerLockControls';
 import $ from './constants';
 
 class MoveAction extends Component {
   constructor(parent, props = {}) {
     super(parent, props);
 
-    this.controls = new PointerLockControls(parent.camera);
     this.travelMode = $.TravelModes.God;
     this.fly = 0;
     this.moveMap = {x: 0, shift: 0, flyY: 0, z: 0};
@@ -74,7 +71,7 @@ class MoveAction extends Component {
   }
 
   update(dt, scene) {
-    this.raycaster.ray.origin.copy(this.controls.getObject().position);
+    this.raycaster.ray.origin.copy(this.props.moveObject.position);
     this.raycaster.ray.origin.y -= 10;
 
     const intersections = this.raycaster.intersectObjects(scene.children);
@@ -91,20 +88,18 @@ class MoveAction extends Component {
 
     if (isOnObject) {
       this.velocity.y = Math.max(0, this.velocity.y);
-
       this.canJump = true;
     }
     if (this.velocity.x !== 0) {
       //console.info("v: ", this.velocity, "dt: ", dt);
     }
-    this.controls.getObject().translateX(this.velocity.x);
-    this.controls.getObject().translateY(this.velocity.y);
-    this.controls.getObject().translateZ(this.velocity.z);
+    this.props.moveObject.translateX(this.velocity.x);
+    this.props.moveObject.translateY(this.velocity.y);
+    this.props.moveObject.translateZ(this.velocity.z);
 
-    if (this.controls.getObject().position.y < 10) {
+    if (this.props.moveObject.position.y < 10) {
+      this.props.moveObject.position.y = 10;
       this.velocity.y = 0;
-      this.controls.getObject().position.y = 10;
-
       this.canJump = true;
     }
   }

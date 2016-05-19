@@ -54,9 +54,6 @@ class Menu extends Component {
   }
 
   downHandler(options) {
-    // if (options.key === this.props.activationKey) {
-    //   return this.toggleActive();
-    // }
     switch (options.key) {
       case 38: // up
         this.moveCursor(0, -1); break;
@@ -80,6 +77,24 @@ class Menu extends Component {
     this.root.visible = !this.root.visible;
     const handler = this.root.visible ? 'build' : '';
     events.emit('setactiveinputhandler', {handler: handler});
+  }
+
+  addButton(i, j, x, y, block) {
+    const plane = new Plane2D({
+      name: 'block',
+      size: {w: 100, h: 100},
+      rotation: {x: 0, y: 0, z: 0},
+      position: {x: x, y: y, z: -100},
+      texture: block.texture
+    });
+    //console.info("sz: ", $.Size[block.shape]);
+    this.grid[j][i] = {
+      mesh: plane.mesh,
+      props: block,
+      gridPosition: [i, j]
+    };
+    this.root.add(plane.mesh);
+    return this.grid[j][i];
   }
 
   moveCursor(x, y) {

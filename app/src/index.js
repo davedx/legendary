@@ -3,15 +3,16 @@ import events from './events';
 import Cube from './Cube'
 import Plane from './Plane'
 import Player from './Player';
+import Mobile from './Mobile';
 import RootInputHandler from './RootInputHandler';
 
 let renderer;
-let player;
+let player, mobile;
 let prevTime = performance.now();
 
-let scene = initWorld();
+const scene = initWorld();
 let running = true;
-let rootInputHandler = new RootInputHandler({exit: exit});
+const rootInputHandler = new RootInputHandler({exit: exit});
 
 animate();
 
@@ -24,16 +25,18 @@ function initWorld() {
   renderer.autoClearColor = false;
   document.body.appendChild(renderer.domElement);
 
-  let scene = new THREE.Scene();
+  const scene = new THREE.Scene();
 
-  player = Player.create({});
+  player = Player({position: new THREE.Vector3(0, 10, 0)});
   scene.add(player);
 
-  let floor = new Plane({name: 'floor', size: {w: 2000, h: 2000}, rotation: {x: -Math.PI / 2, y: 0, z: 0}, randomColors: true});
+  mobile = Mobile({position: new THREE.Vector3(0, 25, -150)});
+  scene.add(mobile);
+
+  const floor = new Plane({name: 'floor', size: {w: 2000, h: 2000}, rotation: {x: -Math.PI / 2, y: 0, z: 0}, randomColors: true});
   scene.add(floor.mesh);
 
-  //let pos = Cube.calculateRoundedPosition(0, 50, -300);
-  let cube = new Cube({name: 'cube', unitPosition: {x: 0, y: 0, z: -3}, texture: 'crate.gif'});
+  const cube = new Cube({name: 'cube', unitPosition: {x: 0, y: 0, z: -3}, texture: 'crate.gif'});
   scene.add(cube.mesh);
 
   window.addEventListener('resize', onWindowResize, false);
@@ -67,6 +70,8 @@ function animate() {
 function exit() {
   running = false;
   scene.remove(player);
+  scene.remove(mobile);
   player.destroy();
+  mobile.destroy();
   rootInputHandler.destroy();
 }

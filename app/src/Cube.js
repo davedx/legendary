@@ -10,10 +10,10 @@ class Cube {
     let size = props.size ? props.size : $.Size.Cube;
     this.texture = new THREE.TextureLoader().load(`assets/${props.texture}`);
     if (_.isObject(size)) {
-      console.info("setting size to: ", size);
+      //console.info("setting size to: ", size);
       this.geometry = new THREE.BoxBufferGeometry(size.x, size.y, size.z);
     } else {
-      console.info("setting size to: ", size);
+      //console.info("setting size to: ", size);
       this.geometry = new THREE.BoxBufferGeometry(size, size, size);
     }
     this.material = new THREE.MeshBasicMaterial({ map: this.texture });
@@ -39,11 +39,6 @@ class Cube {
       pos.y -= $.Size.Cube*0.5 - size.y*0.5;
     }
     mesh.position.set(pos.x, pos.y, pos.z);
-  }
-
-  static calculateRoundedPosition(x, y, z) {
-    let len = $.Size.Cube;
-    //return {x: x % len * len}
   }
 }
 

@@ -43,8 +43,7 @@ class BuildAction extends Component {
 
   // bug: can't build on ground?
   doAction(scene) {
-    const moveAction = this.parent.components.moveAction;
-    this.actionRaycaster.ray.origin.copy(moveAction.controls.getObject().position);
+    this.actionRaycaster.ray.origin.copy(this.parent.controls.getObject().position);
     this.actionRaycaster.ray.direction.copy(this.parent.camera.getWorldDirection());
 
     const intersections = this.actionRaycaster.intersectObjects(scene.children);

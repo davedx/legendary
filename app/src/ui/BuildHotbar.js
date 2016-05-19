@@ -49,25 +49,13 @@ class BuildHotBar extends Menu {
     let x = this.window.position.x+20, y = this.window.position.y-20, step = 120,
       i = 0, j = 0;
     _.each(group, (block, key) => {
-      let cube = new Plane2D({
-        name: 'block',
-        size: {w: 100, h: 100},
-        position: {x: x, y: y, z: -100},
+      const btn = this.addButton(i, j, x, y, block);
+      btn.spawner = new Cube({
+        name: 'cube',
+        size: $.Size[block.shape],
+        position: new THREE.Vector3(0, 0, 0),
         texture: block.texture
       });
-      console.info("sz: ", $.Size[block.shape]);
-      this.grid[j][i] = {
-        mesh: cube.mesh,
-        spawner: new Cube({
-          name: 'cube',
-          size: $.Size[block.shape],
-          position: new THREE.Vector3(0, 0, 0),
-          texture: block.texture
-        }),
-        props: block,
-        gridPosition: [i, j]
-      };
-      this.root.add(cube.mesh);
       x += $.Menus.Step;
       i++;
       if (x > 400) {

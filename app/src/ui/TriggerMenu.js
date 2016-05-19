@@ -5,27 +5,9 @@ import events from '../events';
 import Menu from './Menu';
 import $ from '../constants';
 
-const buildMaterials1 = {
-  Crate: {
-    name: 'Crate',
-    texture: 'crate.gif',
-    shape: 'Cube'
-  },
-  Grass: {
-    name: 'Grass',
-    texture: 'grass.jpg',
-    shape: 'Cube'
-  },
-  GrassThick: {
-    name: 'Thick Grass',
-    texture: 'grass.jpg',
-    shape: 'Cube'
-  }
-};
-
-class BuildMenu extends Menu {
+class TriggerMenu extends Menu {
   constructor(scene, props = {}) {
-    props.activationKey = 66;
+    props.activationKey = 84; //T
     props.handler = 'build';
     props.window = {
       centerHorizontal: true,
@@ -35,8 +17,17 @@ class BuildMenu extends Menu {
     };
     super(scene, props);
 
-    this.setTitle('Build Menu');
-    this.addGroupToGrid(buildMaterials1);
+    this.setTitle('Trigger Menu');
+
+    //
+    //this.addGroupToGrid(buildMaterials1);
+    let x = this.window.position.x+20, y = this.window.position.y-20, step = 120;
+    this.addButton(0, 0, x, y, {
+      texture: 'btn-off.jpg'
+    });
+    this.addButton(1, 0, x + 120, y, {
+      texture: 'btn-spawn.jpg'
+    });
   }
 
   addGroupToGrid(group) {
@@ -57,4 +48,4 @@ class BuildMenu extends Menu {
   }
 }
 
-export default BuildMenu;
+export default TriggerMenu;

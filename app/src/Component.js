@@ -6,9 +6,7 @@ class Component {
 
   update(dt, scene) {}
 
-  destroy() {
-    console.info("Component.Destroy");
-  }
+  destroy() {}
 }
 
 export default Component;
