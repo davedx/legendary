@@ -1,0 +1,22 @@
+{
+  "title": "Trigger Menu",
+  "activationKey": 84,
+  "handler": "trigger",
+  "window": {
+    "width": 800,
+    "height": 600,
+    "centerHorizontal": true,
+    "centerVertical": true
+  },
+  "controls": [{
+    "unitX": 0,
+    "unitY": 0,
+    "texture": "btn-off.jpg",
+    "action": "off"
+  }, {
+    "unitX": 1,
+    "unitY": 0,
+    "texture": "btn-spawn.jpg",
+    "action": "spawn"
+  }]
+}

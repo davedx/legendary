@@ -1,0 +1,28 @@
+{
+  "title": "Build HotBar",
+  "window": {
+    "width": 600,
+    "height": 200,
+    "centerHorizontal": true,
+    "alignBottom": true
+  },
+  "controls": [{
+    "unitX": 0,
+    "unitY": 0,
+    "name": "Crate",
+    "texture": "crate.gif",
+    "shape": "Cube"
+  }, {
+    "unitX": 1,
+    "unitY": 0,
+    "name": "Grass",
+    "texture": "grass.jpg",
+    "shape": "Cube"
+  }, {
+    "unitX": 2,
+    "unitY": 0,
+    "name": "Trigger Area",
+    "texture": "triggerarea.jpg",
+    "shape": "FlatCube"
+  }]
+}

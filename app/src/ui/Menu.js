@@ -8,10 +8,12 @@ import $ from '../constants';
 class Menu extends Component {
   constructor(parent, props = {}) {
     super(parent, props);
+    console.info("this.props = ", this.props);
     // this.props = props;
     this.grid = [[]];
     this.root = new THREE.Object3D();
     this.root.visible = false;
+    this.setTitle(props.title);
 
     if (this.props.handler) {
       this.keydownHandler = `${this.props.handler}:onkeydown`;
@@ -42,6 +44,11 @@ class Menu extends Component {
       position: {x: this.window.position.x+10, y: this.window.position.y-10, z: -100},
       gridPosition: [0, 0]
     });
+
+    if (props.controls) {
+      this.addGroupToGrid(props.controls);
+    }
+
     this.root.add(menuPlane.mesh);
     this.root.add(this.cursor.mesh);
   }
@@ -75,7 +82,7 @@ class Menu extends Component {
 
   toggleActive() {
     this.root.visible = !this.root.visible;
-    const handler = this.root.visible ? 'build' : '';
+    const handler = this.root.visible ? this.props.handler : '';
     events.emit('setactiveinputhandler', {handler: handler});
   }
 
@@ -109,6 +116,17 @@ class Menu extends Component {
     if (this.onCursorMoved) {
       this.onCursorMoved(newPosX);//this.grid[newPosX][0]);
     }
+  }
+
+  addGroupToGrid(group) {
+    let step = 120;
+    _.each(group, (block) => {
+      const i = block.unitX;
+      const j = block.unitY;
+      const x = (this.window.position.x+20) + step*i;
+      const y = (this.window.position.y-20) - step*j;
+      this.addButton(i, j, x, y, block);
+    });
   }
 
   setTitle(title) {
